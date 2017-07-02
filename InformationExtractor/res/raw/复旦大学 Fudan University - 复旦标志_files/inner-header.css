@@ -1,0 +1,141 @@
+.flag_upper{
+	display: none;
+}
+
+.flag_lower{
+	display: none !important;
+}
+
+.flag {
+  height: 130px;
+}
+
+.right.radius-down{
+	background-color: #0e419c;
+	margin-right: 250px;
+	margin-top: 50px;
+}
+
+#innerHeader-fudanLogo {
+	position: absolute;
+	top: 20px;
+	left: 45px;
+}
+
+.wrapper {
+  background: url('../img/fudan_secondary_navBG_02.png') repeat-x left top;
+  display: table;
+  position: relative;
+  width: 100%;
+}
+.channel{
+	background:none;
+	margin-top:-50px;
+}
+
+.nav-bar li.has-flyout .divider{
+	display: none;
+}
+
+.nav-bar li{
+	z-index:10;
+}
+
+.slider_shadow{
+background: url('');	
+}
+
+#top-header{
+
+	
+	height: 151px;
+	z-index: 2;
+}
+.main{	
+	margin-top: -150px;
+}
+.mainmenu{
+	background: transparent;
+}
+.contents{
+		margin-top: -50px;
+		padding-top: 50px;
+}
+
+.channel{
+	margin-top: 0;
+}
+
+.channeltitle{
+	
+		position: relative;
+		z-index:1;
+		
+}
+.nav-side ul.channeltitle{
+	padding-top: 0px;
+}
+.sub-col-img img{
+	position:relative;
+	z-index:-1;
+margin-top: -50px;
+
+}
+.channeltitle li{
+	position: relative;
+	z-index:30;
+}
+
+.nav-bar li{
+	z-index:10;
+}
+
+#top-header{
+
+	
+	height: 151px;
+	z-index: 2;
+}
+.main{
+	
+	margin-top: -150px;
+}
+.mainmenu{
+	background: transparent;
+	background-color: ;
+}
+.contents{
+		margin-top: -50px;
+		padding-top: 50px;
+
+
+}
+.channel{
+	margin-top: 0;
+}
+.channeltitle{
+	
+		position: relative;
+		z-index:1;
+		
+}
+.nav-side ul.channeltitle{
+	padding-top: 0px;
+}
+.sub-col-img img{
+	position:relative;
+	z-index:-1;
+margin-top: -50px;
+
+}
+.channeltitle li{
+	position: relative;
+	z-index:30;
+}
+
+.nav-side ul.channeltitle li img {
+    margin-left: -50px;
+    margin-top: -10px;
+    height:50px;
+    width:153px;
+}

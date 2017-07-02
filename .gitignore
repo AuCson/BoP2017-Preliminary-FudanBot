@@ -1,0 +1,5 @@
+*.pyc
+.idea/
+out.*
+raw/
+stanford-corenlp-full-2016-10-31/
