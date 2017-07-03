@@ -2,17 +2,30 @@
 from __future__ import print_function
 import xml.etree.cElementTree as ET
 from sematic_tree import Sematic_tree
-import csv
+import csv,os
+import urllib2
+
+mycorenlp_server_addr = 'http://10.88.12.45:9000?outputFormat=xml'
+def parse_request(st):
+    url = mycorenlp_server_addr
+    #data = urllib.urlencode(prop)
+    req = urllib2.Request(url,st)
+    response = urllib2.urlopen(req)
+    xml = response.read()
+    return xml
+
+class Relation:
+    def __init__(self,origin_sentence = '',subject='',object='',predicate='',ners=None,page=''):
+        self.origin_sentence = origin_sentence
+        self.subject = subject
+        self.object = object
+        self.predicate = predicate
+        self.ners = ners
+        if not self.ners:
+            self.ners = {'time':None,'org':None,'person':None,'number':None}
+        self.page = page
 
 class POS_regex_parser:
-    class Relation:
-        def __init__(self):
-            self.origin_sentence = ''
-            self.subject = ''
-            self.object = ''
-            self.predicate = ''
-            self.ners = None
-
     def __init__(self):
         self.xml_file = None
         self.relation_all = []
@@ -22,6 +35,20 @@ class POS_regex_parser:
         self.file_name = file_name
         self.xml_file = ET.parse('res/xml/'+file_name).getroot()
         self.root = self.xml_file[0][0]
+        self.file_name = self.file_name.split('.')[0]
+
+    def load_xml_from_text(self,text):
+        self.xml_file = ET.fromstring(text)
+        self.root = self.xml_file[0][0]
+
+    def load_raw_file_btw_xml(self,root_dir,file_name):
+        with open(root_dir+file_name,'r') as f:
+            s = f.read()
+            xml = parse_request(s)
+            with open(self.file_name+'.xml','w') as wf:
+                wf.write(xml)
+            self.load_xml_from_text(xml)
+            self.file_name = file_name.split('.')[0]
 
     def get_ner_dict(self,st):
         ner_dict = {}
@@ -56,12 +83,21 @@ class POS_regex_parser:
             tree.build_tree_from_root()
         except Exception:
             print ('tree error')
+            return None
 
         relation_list = []
         subj_list = []
         pred_list = []
         obj_list = []
         ner_list = []
+
+        try:
+            s = tree.find_tag('ROOT')[0]
+        except IndexError:
+            print('Root error')
+            return None
+
+        origin_sentence = tree.get_content_recur(s)
 
         # step 1, find all the VP from the sentence
         VP_list = tree.find_tag('VP')
@@ -75,10 +111,7 @@ class POS_regex_parser:
                 nearest_np_b = first_np
             if not first_np:
                 first_np = nearest_np_b
-            #if tree.find_tag('NN',root = nearest_np_b):
             subj = nearest_np_b
-            #else:
-            #    subj = None
             # find detailed predicates
             vv_list = tree.find_tag(['VRD','VV','VE'],root=vp)
             if not vv_list:
@@ -86,8 +119,6 @@ class POS_regex_parser:
                 vp_phrase = tree.get_content_recur(vp)
                 if qp_list:
                     qp_phrase = tree.get_content_recur(qp_list[0])
-                    if qp_phrase == '19个':
-                        a = 1
                     sidx = vp_phrase.find(qp_phrase)
                     if sidx != -1:
                         t_vp_phrase = vp_phrase[0:sidx] + vp_phrase[sidx+len(qp_phrase):]
@@ -99,8 +130,6 @@ class POS_regex_parser:
                 ner_list.append(self.get_ner_relation(vp,tree))
             else:
                 for vv in vv_list:
-                    if tree.get_content_recur(vv):
-                        a = 1
                     nearest_np_f = tree.find_nearest_tag(vv, ['NP', 'IP', 'PP'], backward=False, punct=False,
                                                          consecutive=True)
                     subj_list.append(tree.get_content_recur(subj))
@@ -110,11 +139,13 @@ class POS_regex_parser:
 
         # generate relation tuples
         for idx,pred in enumerate(pred_list):
-            r = self.Relation()
+            r = Relation()
+            r.page = self.file_name
             r.subject = subj_list[idx]
             r.object = obj_list[idx]
             r.predicate = pred
             r.ners = ner_list[idx]
+            r.origin_sentence = origin_sentence
             relation_list.append(r)
         return relation_list
 
@@ -124,22 +155,32 @@ class POS_regex_parser:
             relation_list = self.process_sentence(st)
             self.relation_all.append(relation_list)
         print ('complete')
-        self.output()
+        return self.relation_all
 
     def output(self):
         f = open('res/ie/' + self.file_name.split('.')[0] + '.csv','wb')
         writer = csv.writer(f, quotechar='"')
         for relation_list in self.relation_all:
             for relation in relation_list:
-                writer.writerow([relation.subject,relation.predicate,relation.object,
-                                 relation.ners['time'],relation.ners['org'],relation.ners['person'],relation.ners['number']])
+                writer.writerow([relation.page.encode('utf-8'),relation.subject,relation.predicate,relation.object,
+                                 relation.ners['time'],relation.ners['org'],relation.ners['person'],relation.ners['number'],
+                                 relation.origin_sentence])
+
         f.close()
 
+def process_all():
+    root_dir = u'res/raw/'
+    for root, dirs, files in os.walk(root_dir):
+        for f in files:
+            if f.endswith('.txt'):
+                r = POS_regex_parser()
+                r.load_raw_file_btw_xml(root_dir,f)
+                r.process()
+                r.output()
 
 
-p = POS_regex_parser()
-p.load_parsed_xml('test2.txt.xml')
-p.process()
+
+process_all()
 
 
 

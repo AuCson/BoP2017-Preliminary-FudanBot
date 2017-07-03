@@ -26,14 +26,17 @@ class Sematic_tree:
     def preprocess_symb_pair(self):
         i = 0
         ts = []
+        match = {u'“':[u'”',u'“'],u'《':[u'》']}
+        syn = None
         self.s = self.s.decode('utf-8')
         while i < len(self.s):
             ts.append(self.s[i])
-            if self.s[i] == u'“':
+            if self.s[i] in [u'“',u'《']:
+                syn = self.s[i]
                 lcnt = 0
                 rcnt = 0
                 j = i
-                while self.s[j] != u'”' and j < len(self.s):
+                while self.s[j] not in match[syn] and j < len(self.s):
                     if self.s[j] == u'(':
                         lcnt +=1
                     elif self.s[j] == u')':
@@ -141,20 +144,22 @@ class Sematic_tree:
         res = []
         depth_lock = None
         while idx >= 0 and idx < len(self.flatten):
-            #if not depth_lock or self.flatten[idx].depth <= depth_lock:
-            if (type(tag) is list and self.flatten[idx].tag in tag) or self.flatten[idx].tag == tag:
-                if backward:
-                    res.insert(0,self.flatten[idx])
+            if depth_lock and self.flatten[idx].depth <= depth_lock:
+                depth_lock = None
+            if not depth_lock:
+                if (type(tag) is list and self.flatten[idx].tag in tag) or self.flatten[idx].tag == tag:
+                    if backward:
+                        res.insert(0,self.flatten[idx])
+                    else:
+                        res.append(self.flatten[idx])
+                    if not consecutive:
+                        break
+                    depth_lock = self.flatten[idx].depth
                 else:
-                    res.append(self.flatten[idx])
-                if not consecutive:
-                    break
-                depth_lock = self.flatten[idx].depth
-            else:
-                if self.flatten[idx].tag == 'PU' and self.flatten[idx].word != '、' and punct:
-                    break
-                elif consecutive and res and self.flatten[idx].word != '、':
-                    break
+                    if self.flatten[idx].tag == 'PU' and self.flatten[idx].word != '、' and punct:
+                        break
+                    elif consecutive and res and self.flatten[idx].word != '、':
+                        break
             if backward:
                 idx -= 1
             else:
@@ -201,7 +206,8 @@ class Sematic_tree:
         ret = []
 
         while idx >= 0 and idx < len(self.flatten):
-            if self.ner_dict.get(self.flatten[idx].word,None) in [ner,'MISC']:
+            if (ret and self.ner_dict.get(self.flatten[idx].word,None) in [ner,'MISC']) or \
+                    (not ret and self.ner_dict.get(self.flatten[idx].word,None) == ner):
                 if backward:
                     ret.insert(0,self.flatten[idx])
                 else:
@@ -218,6 +224,7 @@ class Sematic_tree:
                 idx -= 1
             else:
                 idx += 1
+
         if not consecutive:
             if not ret:
                 return None
