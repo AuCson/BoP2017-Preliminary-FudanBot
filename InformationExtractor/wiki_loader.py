@@ -23,10 +23,10 @@ def WiKi_infromation_extract():
     for key,item in wiki.items():
         res = extract_single(key,item)
         relation_all += res
-    output(relation_all)
+    output(relation_all,'res/ie/wiki.csv')
 
-def output(relation_all):
-    f = open('res/ie/wiki.csv','wb')
+def output(relation_all,dest):
+    f = open(dest,'wb')
     writer = csv.writer(f, quotechar='"')
     for relation in relation_all:
         writer.writerow([relation.page,relation.subject,relation.predicate,relation.object,
@@ -36,7 +36,7 @@ def output(relation_all):
     f.close()
 
 def is_predefined_property(s):
-    pre_defined_property = ['类型', '名称', '时间','院系', '简介', '研究方向', '所授课程', '联系方式','网址','门类']
+    pre_defined_property = ['类型', '名称', '时间','院系', '简介', '方向', '课程', '联系','网址','门类','地址']
     for prop in pre_defined_property:
         if s.find(prop)!=-1:
             return True
@@ -92,3 +92,5 @@ def extract_single(entity,prop):
     relations.append(r)
     return relations
 
+if __name__ == '__main__':
+    WiKi_infromation_extract()

@@ -30,6 +30,7 @@ class POS_regex_parser:
         self.xml_file = None
         self.relation_all = []
         self.file_name = ''
+        self.prev_subject = None
 
     def load_parsed_xml(self,file_name):
         self.file_name = file_name
@@ -107,10 +108,14 @@ class POS_regex_parser:
         for vp in VP_list:
             # if subject is None, previous subject is used
             nearest_np_b = tree.find_nearest_tag(vp,'NP',backward=True,punct = True,consecutive=True)
-            if not nearest_np_b and first_np:
-                nearest_np_b = first_np
             if not first_np:
                 first_np = nearest_np_b
+                if not nearest_np_b:
+                    first_np = self.prev_subject
+                self.prev_subject = first_np
+            if not nearest_np_b:
+                nearest_np_b = first_np
+
             subj = nearest_np_b
             # find detailed predicates
             vv_list = tree.find_tag(['VRD','VV','VE'],root=vp)
@@ -161,6 +166,8 @@ class POS_regex_parser:
         f = open('res/ie/' + self.file_name.split('.')[0] + '.csv','wb')
         writer = csv.writer(f, quotechar='"')
         for relation_list in self.relation_all:
+            if not relation_list:
+                continue
             for relation in relation_list:
                 writer.writerow([relation.page.encode('utf-8'),relation.subject,relation.predicate,relation.object,
                                  relation.ners['time'],relation.ners['org'],relation.ners['person'],relation.ners['number'],
@@ -169,18 +176,22 @@ class POS_regex_parser:
         f.close()
 
 def process_all():
-    root_dir = u'res/raw/'
+    root_dir = u'res/raw/school/'
     for root, dirs, files in os.walk(root_dir):
         for f in files:
-            if f.endswith('.txt'):
-                r = POS_regex_parser()
-                r.load_raw_file_btw_xml(root_dir,f)
-                r.process()
-                r.output()
+            try:
+                if f.endswith('.txt'):
+                    r = POS_regex_parser()
+                    r.load_raw_file_btw_xml(root_dir,f)
+                    r.process()
+                    r.output()
+            except Exception:
+                pass
 
 
 
-process_all()
+if __name__ == '__main__':
+    process_all()
 
 
 
