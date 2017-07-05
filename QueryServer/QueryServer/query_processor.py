@@ -1,13 +1,14 @@
 # coding=utf-8
-import _mysql as mysql
+import MySQLdb
 import urllib,urllib2
 import json
+import jieba
 from POS_regex_parser import Relation
 from POS_regex_parser import parse_request
 from POS_regex_parser import POS_regex_parser
 
 def connect_db():
-    db = mysql.connect('localhost','root','bop@fdu666')
+    db = MySQLdb.connect(host='127.0.0.1',user='root',passwd='kim419819',db='bop')
     return db
 
 def synset(word):
@@ -20,8 +21,17 @@ def get_query_relation(st):
     p = POS_regex_parser()
     xml = parse_request(st)
     p.load_xml_from_text(xml)
-    relation = p.process()
-    return relation()
+    relation_all = p.process()
+    relation = []
+    for l in relation_all:
+        for r in l:
+            relation.append(r)
+    return relation
+
+def to_query(word):
+    s = '%'+word+'%'
+    s = s.replace(' ','')
+    return s.encode('utf-8')
 
 fudan_property = [
 '校徽','校庆日','校名','校训','校风','校歌','创办日期','校区','创建','校庆','创办','创办于','建校','建校于','校友',
@@ -37,44 +47,77 @@ school_property = [
 department_property = ['党委办公室','共青团复旦大学委员会', '保卫处', '武装部', '文科科研处', '对外联络与发展处', '人事处', '财务处', '张江校区管理委员会', '资产经营公司（原产业化与校产管理办公室）', '总务处', '研究生院', '学生工作部', '老干部工作处', '审计处', '医院管理处', '枫林校区管理委员会', '统战部', '基建处', '纪委', '监察处', '研究生工作部', '工会', '发展规划处', '机关党委', '教务处', '复旦大学校务委员会', '复旦大学学位评定委员会', '上海医学院办公室', '医学发展规划办公室', '医学学位与研究生教育管理办公室', '退管会', '医学教育管理办公室', '外国留学生工作处', '党委党校办公室', '后勤党委', '资产管理处']
 job_property = ['校长', '副校长', '党委书记','常务书记','党委副书记', '院长', '副院长', '院党委书记', '系主任', '校长助理', '院士', '长江学者', '全国高校名师', '中国科学院院士', '中国工程院院士', '文科杰出教授', '科学院院士', '工程院院士', '本科生', '研究生', '预科生', '青年学者', '青年研究员', '副教授', '讲师', '学生', '老师', '教授', '专科生', '留学生', '千人计划', '千人计划学者', '国家杰出青年', '国家杰青', '文科资深教授', '文科特聘资深教授']
 
-def handler(st,intents,entites):
+def handler(st,intents,entities):
     func_dict = {
-        '实体属性“谁”查询':query_person,
-        '实体属性“什么”查询':query_prop,
-        '实体属性“多少”查询':query_number,
-        '实体属性“哪里”查询':query_prop,
-        '实体属性“何时”查询':query_prop,
-        '实体属性“是否”查询':query_A_is_subset_of_B,
+        u'实体属性“谁”查询':query_person,
+        u'实体属性“什么”查询':query_prop,
+        u'实体属性“多少”查询':query_number,
+        u'实体属性“哪里”查询':query_prop,
+        u'实体属性“何时”查询':query_prop,
+        u'实体属性“是否”查询':query_A_is_subset_of_B,
     }
     # fully independent double questions with differenct intent
     intent_list = []
-    for intent in intents['intent']:
-        if intent['score'] > 0.3:
-            intent_list.append(intent)
+    for intent in intents:
+        if intent[u'score'] > 0.3:
+            intent_list.append(intent[u'intent'])
+    for intent in intent_list:
+        func_dict[intent](st,intent,entities)
 
 
-def query_prop(st,intents,entities):
+def query_prop(st,intent,entities):
     pass
 
-def query_time(st,intents,entities):
+def query_time(st,intent,entities):
     pass
 
-def query_number(st,intents,entities):
+def query_number(st,intent,entities):
     # method 1. Fetch from '统计概览'
     db = connect_db()
     cursor = db.cursor()
-    entity = synset()
-    cursor.execute('select object from relation where ')
+    entities.sort(key=lambda x:-x[u'startIndex'])
+    type_entities= [i[u'type'] for i in entities]
+    words = [i[u'entity'] for i in entities]
+    # multiple entity / property
 
+    multiple = False
+    if st.find('和')+st.find('与')+st.find('分别') != 0:
+        multiple = True
+    res = []
+    for item in entities:
+        query_word = to_query(item[u'entity'])
+        if u'院系所和公共教学单位' not in type_entities:
+            cursor.execute("select object from relation where page='统计概览' and subject like '%s'" % query_word)
+            res += cursor.fetchall()
+            if not multiple:
+                break
+        if u'院系所和公共教学单位' not in type_entities or not res:
+            departments = [to_query(i[u'entity']) for i in entities if i['type']==u'学校相关实体']
+            l = jieba._lcut_for_search(st)
+            for department in departments:
+                for word in l:
+                    word = to_query(word)
+                    cursor.execute("select num,origin from relation where page='%s' and subject like '%s'" % (department,word))
+                    ret = cursor.fetchall()
+                    if not ret:
+                        for word in l:
+                            word = to_query(word)
+                            cursor.execute("select num,origin from relation where (page='%s' or subject='%s') "
+                                           "and (object like '%s' or predicate like '%s')" % department,department,word,word)
+                            ret = cursor.fetchall()
+                    res += ret
+            if not multiple:
+                break
+
+    return res
+
+def query_A_is_subset_of_B(st,intent,entities):
     pass
 
-def query_A_is_subset_of_B(st,intents,entities):
+def query_person(st,intent,entities):
     pass
 
-def query_person(st,intents,entities):
-    pass
-
-def multi_search_handler(st,intents,entities):
+def multi_search_handler(st,intent,entities):
     pass
 
 def get_query(st):
@@ -85,7 +128,10 @@ def get_query(st):
     urllib2.Request(url)
     response = urllib.urlopen(url)
     js = json.loads(response.read())
-    print js
+    return js
 
 if __name__ == '__main__':
-    get_query('复旦大学的校长是谁？')
+    #r = get_query_relation('复旦大学计算机系有多少本科生？')
+    st = '计算机系有多少教授？'
+    js = get_query(st)
+    handler(st,js['intents'],js['entities'])

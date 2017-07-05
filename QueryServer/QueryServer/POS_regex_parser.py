@@ -135,7 +135,7 @@ class POS_regex_parser:
                 for vv in vv_list:
                     nearest_np_f = tree.find_nearest_tag(vv, ['NP', 'IP', 'PP'], backward=False, punct=False,
                                                          consecutive=True)
-                    subj_list.append(tree.get_content_recur(subj))
+                    subj_list.append(tree.get_content_recur(subj[0]))
                     pred_list.append(tree.get_content_recur(vv))
                     obj_list.append(tree.get_content_recur(nearest_np_f))
                     ner_list.append(self.get_ner_relation(vv, tree))
