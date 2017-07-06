@@ -105,7 +105,7 @@ class POS_regex_parser:
         first_np = None
         for vp in VP_list:
             # if subject is None, previous subject is used
-            nearest_np_b = tree.find_nearest_tag(vp,'NP',backward=True,punct = True,consecutive=True)
+            nearest_np_b = tree.find_nearest_tag(vp,'NP',backward=True,punct = True,consecutive=False)
             if not first_np:
                 first_np = nearest_np_b
                 if not nearest_np_b:
@@ -134,7 +134,7 @@ class POS_regex_parser:
             else:
                 for vv in vv_list:
                     nearest_np_f = tree.find_nearest_tag(vv, ['NP', 'IP', 'PP'], backward=False, punct=False,
-                                                         consecutive=True)
+                                                         consecutive=False)
                     subj_list.append(tree.get_content_recur(subj[0]))
                     pred_list.append(tree.get_content_recur(vv))
                     obj_list.append(tree.get_content_recur(nearest_np_f))
@@ -157,7 +157,6 @@ class POS_regex_parser:
         for st in self.root:
             relation_list = self.process_sentence(st)
             self.relation_all.append(relation_list)
-        print ('complete')
         return self.relation_all
 
     def output(self):

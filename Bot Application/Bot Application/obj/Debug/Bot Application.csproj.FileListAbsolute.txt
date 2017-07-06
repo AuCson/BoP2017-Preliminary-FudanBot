@@ -40,3 +40,45 @@ c:\users\汪励颢\documents\visual studio 2017\Projects\Bot Application\Bot App
 c:\users\汪励颢\documents\visual studio 2017\Projects\Bot Application\Bot Application\obj\Debug\Bot Application.dll
 c:\users\汪励颢\documents\visual studio 2017\Projects\Bot Application\Bot Application\obj\Debug\Bot Application.pdb
 c:\users\汪励颢\documents\visual studio 2017\Projects\Bot Application\Bot Application\obj\Debug\Bot Application.csprojResolveAssemblyReference.cache
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\Bot Application.dll.config
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\Bot Application.dll
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\Bot Application.pdb
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\Autofac.dll
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\Chronic.dll
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\Microsoft.Bot.Builder.Autofac.dll
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\Microsoft.Bot.Builder.dll
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\Microsoft.Bot.Connector.dll
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\Microsoft.IdentityModel.Protocol.Extensions.dll
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\Microsoft.Rest.ClientRuntime.dll
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\Microsoft.WindowsAzure.Configuration.dll
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\Newtonsoft.Json.dll
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\System.IdentityModel.Tokens.Jwt.dll
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\System.Net.Http.Formatting.dll
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\System.Web.Http.dll
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\System.Web.Http.WebHost.dll
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\Autofac.xml
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\Microsoft.Bot.Builder.xml
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\Microsoft.Bot.Builder.Autofac.xml
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\Microsoft.Bot.Connector.xml
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\Microsoft.IdentityModel.Protocol.Extensions.xml
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\Microsoft.WindowsAzure.Configuration.xml
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\Newtonsoft.Json.xml
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\System.IdentityModel.Tokens.Jwt.xml
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\System.Net.Http.Formatting.xml
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\System.Web.Http.xml
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\System.Web.Http.WebHost.xml
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\ar\Microsoft.Bot.Builder.resources.dll
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\cs\Microsoft.Bot.Builder.resources.dll
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\de-dE\Microsoft.Bot.Builder.resources.dll
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\en\Microsoft.Bot.Builder.resources.dll
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\es\Microsoft.Bot.Builder.resources.dll
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\fa\Microsoft.Bot.Builder.resources.dll
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\fr\Microsoft.Bot.Builder.resources.dll
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\it\Microsoft.Bot.Builder.resources.dll
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\ja\Microsoft.Bot.Builder.resources.dll
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\nl\Microsoft.Bot.Builder.resources.dll
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\ru\Microsoft.Bot.Builder.resources.dll
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\bin\zh-hans\Microsoft.Bot.Builder.resources.dll
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\obj\Debug\Bot Application.csprojResolveAssemblyReference.cache
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\obj\Debug\Bot Application.dll
+E:\Courses\BOP2017\Preliminary\Bot Application\Bot Application\obj\Debug\Bot Application.pdb
