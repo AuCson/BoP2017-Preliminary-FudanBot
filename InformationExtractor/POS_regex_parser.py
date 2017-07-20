@@ -46,8 +46,6 @@ class POS_regex_parser:
         with open(root_dir+file_name,'r') as f:
             s = f.read()
             xml = parse_request(s)
-            with open(self.file_name+'.xml','w') as wf:
-                wf.write(xml)
             self.load_xml_from_text(xml)
             self.file_name = file_name.split('.')[0]
 
@@ -137,10 +135,11 @@ class POS_regex_parser:
                 for vv in vv_list:
                     nearest_np_f = tree.find_nearest_tag(vv, ['NP', 'IP', 'PP'], backward=False, punct=False,
                                                          consecutive=True)
-                    subj_list.append(tree.get_content_recur(subj))
-                    pred_list.append(tree.get_content_recur(vv))
-                    obj_list.append(tree.get_content_recur(nearest_np_f))
-                    ner_list.append(self.get_ner_relation(vv, tree))
+                    for obj in tree.get_content_recur(nearest_np_f).split('，'):
+                        subj_list.append(tree.get_content_recur(subj))
+                        pred_list.append(tree.get_content_recur(vv))
+                        obj_list.append(obj)
+                        ner_list.append(self.get_ner_relation(vv, tree))
 
         # generate relation tuples
         for idx,pred in enumerate(pred_list):
@@ -176,6 +175,7 @@ class POS_regex_parser:
         f.close()
 
 def process_all():
+    '''
     root_dir = u'res/raw/school/'
     for root, dirs, files in os.walk(root_dir):
         for f in files:
@@ -187,7 +187,11 @@ def process_all():
                     r.output()
             except Exception:
                 pass
-
+    '''
+    r = POS_regex_parser()
+    r.load_parsed_xml('chinese.txt.xml')
+    r.process()
+    r.output()
 
 
 if __name__ == '__main__':
